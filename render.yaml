@@ -1,0 +1,58 @@
+# Render Blueprint for E-commerce Platform
+# This file configures both frontend and backend services
+
+services:
+  # Backend Service (Express.js API)
+  - type: web
+    name: ecommerce-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd src/server && npm install && npx prisma generate
+    startCommand: cd src/server && npm start
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DATABASE_URL
+        sync: false  # Set this in Render dashboard (your Hostinger MySQL URL)
+      - key: REDIS_URL
+        sync: false  # Set this in Render dashboard (your Upstash Redis URL)
+      - key: JWT_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        sync: false  # Set to your frontend URL
+      - key: COOKIE_DOMAIN
+        sync: false  # Set to your domain
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+
+  # Frontend Service (Next.js)
+  - type: web
+    name: ecommerce-frontend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd src/client && npm install && npm run build
+    startCommand: cd src/client && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false  # Set to your backend URL (e.g., https://ecommerce-backend.onrender.com)
