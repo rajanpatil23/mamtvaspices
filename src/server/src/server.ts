@@ -1,10 +1,15 @@
 import { addAlias } from "module-alias";
 import path from "path";
 
-// Dynamically set module alias based on NODE_ENV
+// Dynamically set module alias based on NODE_ENV and runtime
 const isProduction = process.env.NODE_ENV === "production";
-const projectRoot = path.resolve(__dirname, ".."); // Move up from src to project root
-const aliasPath = path.join(projectRoot, isProduction ? "dist" : "src");
+const isTsNode = process.execArgv.some(arg => arg.includes('ts-node'));
+
+// For ts-node, use src directory; for compiled, use dist
+const projectRoot = path.resolve(__dirname, isTsNode ? ".." : "../.."); 
+const aliasPath = path.join(projectRoot, isTsNode || !isProduction ? "src" : "dist");
+
+console.log("🔧 Module alias setup:", { isProduction, isTsNode, projectRoot, aliasPath });
 
 // Register global handlers for unhandled exceptions/rejections
 process.on("uncaughtException", (err) => {
