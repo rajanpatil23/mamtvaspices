@@ -14,7 +14,7 @@ import paymentRoutes from "@/modules/payment/payment.routes";
 import addressRoutes from "@/modules/address/address.routes";
 import shipmentRoutes from "@/modules/shipment/shipment.routes";
 import transactionRoutes from "@/modules/transaction/transaction.routes";
-import logRoutes from "@/modules/logs/logs.routes";
+import logRoutes from "../../modules/logs/logs.routes";
 import sectionRoutes from "@/modules/section/section.routes";
 import { configureChatRoutes } from "@/modules/chat/chat.routes";
 import attributesRoutes from "@/modules/attribute/attribute.routes";

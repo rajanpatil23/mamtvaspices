@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import AppError from "./AppError";
-import logger from "@/infra/winston/logger";
-import { makeLogsService } from "@/modules/logs/logs.factory";
+import logger from "../../../infra/winston/logger";
+import { makeLogsService } from "../../../modules/logs/logs.factory";
 
 interface CustomError extends Error {
   name: string;
