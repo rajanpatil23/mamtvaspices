@@ -1,17 +1,4 @@
-import { addAlias } from "module-alias";
-import path from "path";
-
-// Dynamically set module alias based on NODE_ENV and runtime
-const isProduction = process.env.NODE_ENV === "production";
-const isTsNode = process.execArgv.some(arg => arg.includes('ts-node'));
-
-// For ts-node, use src directory; for compiled, use dist
-const projectRoot = path.resolve(__dirname, isTsNode ? ".." : "../.."); 
-const aliasPath = path.join(projectRoot, isTsNode || !isProduction ? "src" : "dist");
-
-console.log("🔧 Module alias setup:", { isProduction, isTsNode, projectRoot, aliasPath });
-
-// Register global handlers for unhandled exceptions/rejections
+// Register global handlers for unhandled exceptions/rejections BEFORE any imports
 process.on("uncaughtException", (err) => {
   console.error("❌ Uncaught Exception:", err);
   process.exit(1);
@@ -22,8 +9,8 @@ process.on("unhandledRejection", (reason, promise) => {
   process.exit(1);
 });
 
-addAlias("@", aliasPath);
-
+// tsconfig-paths/register handles path aliases via -r flag in package.json
+// No need for module-alias when using ts-node
 import { createApp } from "./app";
 
 // Add process-level handlers so startup-time exceptions/rejections are logged
