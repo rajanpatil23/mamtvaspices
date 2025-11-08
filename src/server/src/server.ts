@@ -39,14 +39,15 @@ process.on("unhandledRejection", (reason: any) => {
   process.exit(1);
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || '5000', 10);
+const HOST = '0.0.0.0';
 
 async function bootstrap() {
   try {
     const { httpServer } = await createApp();
 
-    httpServer.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
+    httpServer.listen(PORT, HOST, () => {
+      console.log(`🚀 Server is running on ${HOST}:${PORT}`);
     });
 
     httpServer.on("error", (err) => {
