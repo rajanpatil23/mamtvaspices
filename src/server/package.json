@@ -9,6 +9,7 @@
     "dev": "nodemon",
     "build": "tsc",
     "start": "node dist/server.js",
+    "start:ts": "node --max-old-space-size=512 -r tsconfig-paths/register -r ts-node/register src/server.ts",
     "prisma": "prisma",
     "seed": "ts-node seeds/seed.ts",
     "codegen": "graphql-codegen --config codegen.ts"
