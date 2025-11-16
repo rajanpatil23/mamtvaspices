@@ -5,11 +5,13 @@ const getBaseURL = () => {
   if (typeof window !== "undefined") {
     // Client-side: use environment variables
     return process.env.NODE_ENV === "production"
-      ? "https://full-stack-ecommerce-n5at.onrender.com/api/v1"
-      : "http://localhost:5000/api/v1";
+      ? process.env.NEXT_PUBLIC_API_URL_PROD || "https://full-stack-ecommerce-n5at.onrender.com/api/v1"
+      : process.env.NEXT_PUBLIC_API_URL_DEV || "http://localhost:5000/api/v1";
   }
-  // Server-side: default to development
-  return "http://localhost:5000/api/v1";
+  // Server-side: use environment variables or default to development
+  return process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL_PROD || "https://full-stack-ecommerce-n5at.onrender.com/api/v1"
+    : process.env.NEXT_PUBLIC_API_URL_DEV || "http://localhost:5000/api/v1";
 };
 
 const axiosInstance: AxiosInstance = axios.create({
