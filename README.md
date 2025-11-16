@@ -882,11 +882,12 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 📞 Support
 
-- 📧 **Email**: [abdalrahman.aboalkhair.1@gmail.com]
+- 📧 **Email**: [rajan98patol@gmail.com](mailto:rajan98patol@gmail.com)
+- 🌐 **Website**: [rajanpatil.in](https://rajanpatil.in)
 - 💬 **Discussions**: [GitHub Discussions](../../discussions)
 - 🐛 **Issues**: [GitHub Issues](../../issues)
 - 📖 **Documentation**: [Wiki](../../wiki)
 
 ---
 
-**Made with ❤️ by Abdelrahman Aboalkhair**
+**Made with ❤️ by Rajan Patil**
