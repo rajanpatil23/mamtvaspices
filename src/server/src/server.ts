@@ -1,3 +1,19 @@
+// Register module-alias for compiled JavaScript (production)
+import moduleAlias from "module-alias";
+import path from "path";
+
+// Register aliases for compiled code
+if (process.env.NODE_ENV === "production" || !process.env.TS_NODE) {
+  moduleAlias.addAliases({
+    "@": path.join(__dirname),
+    "@infra": path.join(__dirname, "infra"),
+    "@modules": path.join(__dirname, "modules"),
+    "@shared": path.join(__dirname, "shared"),
+    "@routes": path.join(__dirname, "routes"),
+    "@scripts": path.join(__dirname, "scripts"),
+  });
+}
+
 // Register global handlers for unhandled exceptions/rejections BEFORE any imports
 process.on("uncaughtException", (err) => {
   console.error("❌ Uncaught Exception:", err);

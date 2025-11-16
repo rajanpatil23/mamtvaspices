@@ -1,7 +1,8 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { analyticsResolvers } from "@/modules/analytics/graphql/resolver";
 import { productResolvers } from "@/modules/product/graphql/resolver";
-import gql from "graphql-tag";
+
+const gql = require("graphql-tag");
 
 const typeDefs = gql`
   type Query {
@@ -254,9 +255,15 @@ const resolvers = {
     }
   },
   DateTime: {
-    // Add proper DateTime scalar handling
-    serialize: (value: Date) => value.toISOString(),
-    parseValue: (value: string) => new Date(value),
+    serialize: (value: any) => {
+      if (value instanceof Date) {
+        return value.toISOString();
+      }
+      return value;
+    },
+    parseValue: (value: any) => {
+      return new Date(value);
+    },
     parseLiteral: (ast: any) => {
       if (ast.kind === 'StringValue') {
         return new Date(ast.value);

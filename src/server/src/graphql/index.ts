@@ -1,43 +1,61 @@
 import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
 import { ApolloServer } from "@apollo/server";
-import { expressMiddleware } from "@apollo/server/express4";
+import { startStandaloneServer } from "@apollo/server/standalone";
 import { PrismaClient } from "@prisma/client";
 import { combinedSchemas } from "./v1/schema";
+import http from "http";
 
 const prisma = new PrismaClient();
 
 export async function configureGraphQL(app: express.Application) {
+  // For Apollo Server v5, we'll use a simpler approach that works with compiled JS
+  // Create Apollo Server instance
   const apolloServer = new ApolloServer({
     schema: combinedSchemas,
+    introspection: process.env.NODE_ENV !== "production",
   });
+
   await apolloServer.start();
 
-  app.use(
-    "/api/v1/graphql",
-    cors({
-      origin:
-        process.env.NODE_ENV === "production"
-          ? ["https://ecommerce-nu-rosy.vercel.app"]
-          : ["http://localhost:3000", "http://localhost:5173"],
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      allowedHeaders: [
-        "Content-Type",
-        "Authorization",
-        "X-Requested-With",
-        "Apollo-Require-Preflight",
-      ],
-    }),
-    bodyParser.json(),
-    expressMiddleware(apolloServer, {
-      context: async ({ req, res }) => ({
-        req,
-        res,
-        prisma,
-        user: (req as any).user,
-      }),
-    })
-  );
+  // Manual middleware setup for Express integration
+  app.post("/api/v1/graphql", express.json(), async (req, res) => {
+    try {
+      const { query, variables, operationName } = req.body;
+      
+      const result = await apolloServer.executeOperation(
+        {
+          query,
+          variables,
+          operationName,
+        },
+        {
+          contextValue: {
+            req,
+            res,
+            prisma,
+            user: (req as any).user,
+          },
+        }
+      );
+
+      if (result.body.kind === "single") {
+        res.json(result.body.singleResult);
+      } else {
+        res.status(400).json({ errors: [{ message: "Incremental delivery not supported" }] });
+      }
+    } catch (error) {
+      console.error("GraphQL execution error:", error);
+      res.status(500).json({ errors: [{ message: "Internal server error" }] });
+    }
+  });
+
+  // GraphQL playground/introspection endpoint (GET)
+  app.get("/api/v1/graphql", (req, res) => {
+    res.json({
+      message: "GraphQL endpoint is running. Use POST requests to execute queries.",
+      endpoint: "/api/v1/graphql",
+    });
+  });
+
+  console.log("✅ GraphQL configured at /api/v1/graphql");
 }
