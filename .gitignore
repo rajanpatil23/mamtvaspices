@@ -35,6 +35,9 @@ coverage/
 logs/
 *.log
 
+logs/
+!src/modules/logs/
+
 # OS files
 Thumbs.db
 .DS_Store
