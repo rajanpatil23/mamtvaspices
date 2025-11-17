@@ -4,7 +4,21 @@ export class OrderRepository {
   async findAllOrders() {
     return prisma.order.findMany({
       orderBy: { orderDate: "desc" },
-      include: { orderItems: { include: { variant: { include: { product: true } } } } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+        orderItems: { include: { variant: { include: { product: true } } } },
+        address: true,
+        payment: true,
+        shipment: true,
+        transaction: true,
+      },
     });
   }
 
@@ -12,7 +26,21 @@ export class OrderRepository {
     return prisma.order.findMany({
       where: { userId },
       orderBy: { orderDate: "desc" },
-      include: { orderItems: { include: { variant: { include: { product: true } } } } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+        orderItems: { include: { variant: { include: { product: true } } } },
+        address: true,
+        payment: true,
+        shipment: true,
+        transaction: true,
+      },
     });
   }
 
@@ -20,12 +48,48 @@ export class OrderRepository {
     return prisma.order.findUnique({
       where: { id: orderId },
       include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
         orderItems: { include: { variant: { include: { product: true } } } },
         payment: true,
         address: true,
         shipment: true,
         transaction: true,
       },
+    });
+  }
+
+  async updateOrder(orderId: string, data: { status?: string }) {
+    return prisma.order.update({
+      where: { id: orderId },
+      data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+        orderItems: { include: { variant: { include: { product: true } } } },
+        address: true,
+        payment: true,
+        shipment: true,
+        transaction: true,
+      },
+    });
+  }
+
+  async deleteOrder(orderId: string) {
+    return prisma.order.delete({
+      where: { id: orderId },
     });
   }
 

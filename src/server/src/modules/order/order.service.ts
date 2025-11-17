@@ -21,15 +21,35 @@ export class OrderService {
     return orders;
   }
 
-  async getOrderDetails(orderId: string, userId: string) {
+  async getOrderDetails(orderId: string, userId: string, userRole?: string) {
     const order = await this.orderRepository.findOrderById(orderId);
     if (!order) {
       throw new AppError(404, "Order not found");
     }
-    if (order.userId !== userId) {
+    
+    // Allow admins and superadmins to view any order
+    const isAdmin = userRole === "ADMIN" || userRole === "SUPERADMIN";
+    if (!isAdmin && order.userId !== userId) {
       throw new AppError(403, "You are not authorized to view this order");
     }
+    
     return order;
+  }
+
+  async updateOrderStatus(orderId: string, status: string) {
+    const order = await this.orderRepository.findOrderById(orderId);
+    if (!order) {
+      throw new AppError(404, "Order not found");
+    }
+    return this.orderRepository.updateOrder(orderId, { status });
+  }
+
+  async deleteOrder(orderId: string) {
+    const order = await this.orderRepository.findOrderById(orderId);
+    if (!order) {
+      throw new AppError(404, "Order not found");
+    }
+    await this.orderRepository.deleteOrder(orderId);
   }
 
   async createOrderFromCart(userId: string, cartId: string) {

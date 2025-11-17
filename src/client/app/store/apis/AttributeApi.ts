@@ -56,6 +56,15 @@ export const attributeApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Attribute"],
     }),
 
+    updateAttributeValue: builder.mutation({
+      query: ({ id, value }) => ({
+        url: `/attributes/value/${id}`,
+        method: "PUT",
+        body: { value },
+      }),
+      invalidatesTags: ["Attribute"],
+    }),
+
     deleteAttributeValue: builder.mutation({
       query: (id) => ({
         url: `/attributes/value/${id}`,
@@ -91,6 +100,7 @@ export const {
   useAssignAttributeToCategoryMutation,
   useAssignAttributeToProductMutation,
   useDeleteAttributeMutation,
+  useUpdateAttributeValueMutation,
   useDeleteAttributeValueMutation,
   useUpdateCategoryAttributeMutation,
   useDeleteCategoryAttributeMutation,

@@ -140,14 +140,15 @@ const ProductsDashboard = () => {
 
   const confirmDelete = async () => {
     if (!productToDelete) return;
+    setIsConfirmModalOpen(false);
     try {
       await deleteProduct(productToDelete).unwrap();
-      setIsConfirmModalOpen(false);
       setProductToDelete(null);
       showToast("Product deleted successfully", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to delete product:", err);
-      showToast("Failed to delete product", "error");
+      const errorMessage = err?.data?.message || err?.message || "Failed to delete product";
+      showToast(errorMessage, "error");
     }
   };
 
@@ -304,9 +305,10 @@ const ProductsDashboard = () => {
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}
-        message="Are you sure you want to delete this product? This action cannot be undone."
+        message="⚠️ Warning: This product may have existing orders or be in customer carts. Deleting will remove transaction history. Are you sure you want to delete this product?"
         onConfirm={confirmDelete}
         onCancel={cancelDelete}
+        type="danger"
       />
     </div>
   );

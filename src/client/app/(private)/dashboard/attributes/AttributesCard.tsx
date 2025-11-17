@@ -4,6 +4,7 @@ import {
   useUpdateCategoryAttributeMutation,
   useDeleteCategoryAttributeMutation,
   useAssignAttributeToCategoryMutation,
+  useUpdateAttributeValueMutation,
 } from "@/app/store/apis/AttributeApi";
 import { useGetAllCategoriesQuery } from "@/app/store/apis/CategoryApi";
 import useToast from "@/app/hooks/ui/useToast";
@@ -26,8 +27,12 @@ const AttributeCard = ({
   const [editIsRequired, setEditIsRequired] = useState(false);
   const [isEditingCategories, setIsEditingCategories] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [editingValueId, setEditingValueId] = useState<string | null>(null);
+  const [editValueText, setEditValueText] = useState("");
 
   const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
+  const [updateAttributeValue, { isLoading: isUpdatingValue }] =
+    useUpdateAttributeValueMutation();
   const [updateCategoryAttribute, { isLoading: isUpdating }] =
     useUpdateCategoryAttributeMutation();
   const [deleteCategoryAttribute, { isLoading: isDeleting }] =
@@ -332,14 +337,74 @@ const AttributeCard = ({
                   key={value.id}
                   className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200"
                 >
-                  <span className="text-sm text-gray-700">{value.value}</span>
-                  <button
-                    onClick={() => onDeleteValue(value.id)}
-                    className="text-red-500 hover:text-red-700 p-1 rounded-full transition-colors"
-                    aria-label={`Delete value ${value.value}`}
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  {editingValueId === value.id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={editValueText}
+                        onChange={(e) => setEditValueText(e.target.value)}
+                        className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        autoFocus
+                      />
+                      <div className="flex items-center gap-1 ml-2">
+                        <button
+                          onClick={async () => {
+                            if (!editValueText.trim()) return;
+                            try {
+                              await updateAttributeValue({
+                                id: value.id,
+                                value: editValueText.trim(),
+                              }).unwrap();
+                              showToast("Value updated successfully", "success");
+                              setEditingValueId(null);
+                              setEditValueText("");
+                            } catch (err) {
+                              console.error("Error updating value:", err);
+                              showToast("Failed to update value", "error");
+                            }
+                          }}
+                          disabled={isUpdatingValue || !editValueText.trim()}
+                          className="p-1 hover:bg-green-100 text-green-600 rounded transition-colors disabled:opacity-50"
+                          title="Save changes"
+                        >
+                          <Check size={16} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingValueId(null);
+                            setEditValueText("");
+                          }}
+                          className="p-1 hover:bg-gray-200 text-gray-600 rounded transition-colors"
+                          title="Cancel"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-sm text-gray-700">{value.value}</span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => {
+                            setEditingValueId(value.id);
+                            setEditValueText(value.value);
+                          }}
+                          className="p-1 hover:bg-blue-100 text-blue-600 rounded transition-colors"
+                          title="Edit value"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => onDeleteValue(value.id)}
+                          className="p-1 hover:bg-red-100 text-red-600 rounded transition-colors"
+                          title="Delete value"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))
             ) : (

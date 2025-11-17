@@ -1,0 +1,170 @@
+
+# PM2 setup
+#Install globally 
+# # backend
+# cd /root/mamtvaspices/src/server
+# npm install
+# npm run build
+# pm2 start dist/server.js --name mamtva-api
+
+# # frontend
+# cd /root/mamtvaspices/src/client
+# npm install
+# npm run build
+# pm2 start "npm start -- -p 3001" --name mamtva-web --cwd /root/mamtvaspices/src/client
+
+# # save
+# pm2 save
+
+
+
+
+
+
+
+
+
+
+
+
+#   ---------------client/.env.production
+
+#                                                                                      .env.production                                                                                                
+# # API Configuration
+# NEXT_PUBLIC_API_URL_PROD=https://dev.mamtvaspices.com/api/v1
+# NEXT_PUBLIC_GRAPHQL_URL=https://dev.mamtvaspices.com/api/v1/graphql
+# NEXT_PUBLIC_SOCKET_URL=https://dev.mamtvaspices.com
+
+# # Stripe Configuration (optional for testing - payments won't work without this)
+# # NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+
+# # App Configuration
+# NEXT_PUBLIC_APP_NAME="Mamtva Spices"
+# NEXT_PUBLIC_APP_URL=https://dev.mamtvaspices.com
+  
+  
+  
+# ----------------------Inside server/.env
+# # Database Configuration
+# DATABASE_URL="mysql://u788338702_ecommerce:Ecommerce%4054321@srv1991.hstgr.io:3306/u788338702_ecommerce"
+
+# # Server Configuration
+# NODE_ENV=production
+# PORT=5000
+
+# # JWT Configuration (for testing - change in production)
+# JWT_SECRET=mysecret123
+# JWT_EXPIRES_IN=7d
+# REFRESH_TOKEN_EXPIRES_IN=30d
+
+# ACCESS_TOKEN_SECRET=nylpwuwfqanjsi1k3uenem0ddsiqrx
+# REFRESH_TOKEN_SECRET=hklpuenem0ddsiqrxpgnylpwuwfqanjsi1k3
+
+
+# # Session Configuration (for testing)
+# SESSION_SECRET=p3s4oas3gsiqsv7dpp3s4oas3gsiqsv7dp
+# COOKIE_SECRET=6918a439-5820-8322-ae24-1fb66574c8be
+
+# # Redis Configuration (optional - will use in-memory mock if not set)
+# REDIS_URL="rediss://default:AUYeAAIncDI0ZWU1NTg3OTA0Nzc0NzQ0ODA1NTQxNDcwZjlmMGI0M3AyMTc5NTA@uncommon-lark-17950.upstash.io:6379"
+
+# # Cloudinary Configuration (optional for testing - images won't upload without this)
+# # CLOUDINARY_CLOUD_NAME=your_cloud_name
+# # CLOUDINARY_API_KEY=your_api_key
+# # CLOUDINARY_API_SECRET=your_api_secret
+
+# # Stripe Configuration (optional for testing - payments won't work without this)
+# # STRIPE_SECRET_KEY=your_stripe_secret_key
+# # STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+# # STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+
+# # Email Configuration (optional for testing)
+# # EMAIL_HOST=smtp.gmail.com
+# # EMAIL_PORT=587
+# # EMAIL_USER=your_email@gmail.com
+# # EMAIL_PASSWORD=your_app_password
+
+# # Social Login (optional for testing)
+# # GOOGLE_CLIENT_ID=your_google_client_id
+# # GOOGLE_CLIENT_SECRET=your_google_client_secret
+# # FACEBOOK_APP_ID=your_facebook_app_id
+# # FACEBOOK_APP_SECRET=your_facebook_app_secret
+# # TWITTER_CONSUMER_KEY=your_twitter_key
+# # TWITTER_CONSUMER_SECRET=your_twitter_secret
+
+# # Frontend URL
+# CLIENT_URL=https://dev.mamtvaspices.com
+
+# # CORS Origins
+# CORS_ORIGIN=https://dev.mamtvaspices.com
+# COOKIE_DOMAIN=.mamtvaspices.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+#  1] ------------cOMMAND  sudo nano /etc/nginx/sites-available/mamtva
+  
+#                                                                                /etc/nginx/sites-available/mamtva                                                                                       
+# server {
+#     server_name dev.mamtvaspices.com;
+
+#     # Frontend (Next.js)
+#     location / {
+#         proxy_pass http://127.0.0.1:3001;
+#         proxy_http_version 1.1;
+#         proxy_set_header Upgrade $http_upgrade;
+#         proxy_set_header Connection 'upgrade';
+#         proxy_set_header Host $host;
+#         proxy_cache_bypass $http_upgrade;
+#     }
+
+#     # Backend API
+#     location /api/ {
+#         proxy_pass http://127.0.0.1:5000/api/;  >>>>>>>>>>>>>here/API/ 
+#         proxy_http_version 1.1;
+#         proxy_set_header Upgrade $http_upgrade;
+#         proxy_set_header Connection 'upgrade';
+#         proxy_set_header Host $host;
+#         proxy_cache_bypass $http_upgrade;
+#     }
+
+#     # Socket.IO
+#     location /socket.io/ {
+#         proxy_pass http://127.0.0.1:5000;
+#         proxy_http_version 1.1;
+#         proxy_set_header Upgrade $http_upgrade;
+#         proxy_set_header Connection "upgrade";
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_cache_bypass $http_upgrade;
+#     }
+
+#     listen 443 ssl; # managed by Certbot
+#     ssl_certificate /etc/letsencrypt/live/dev.mamtvaspices.com/fullchain.pem; # managed by Certbot
+#     ssl_certificate_key /etc/letsencrypt/live/dev.mamtvaspices.com/privkey.pem; # managed by Certbot
+#     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+#     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+# }
+# server {
+#     if ($host = dev.mamtvaspices.com) {
+#         return 301 https://$host$request_uri;
+#     } # managed by Certbot
+
+
+#     server_name dev.mamtvaspices.com;
+
+#     listen 80;
+#     return 404; # managed by Certbot

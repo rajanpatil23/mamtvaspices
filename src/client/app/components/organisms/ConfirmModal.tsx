@@ -11,6 +11,9 @@ interface ConfirmModalProps {
   onCancel: () => void;
   title?: string;
   type?: "warning" | "danger" | "info";
+  confirmText?: string;
+  cancelText?: string;
+  confirmButtonClass?: string;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -20,6 +23,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onCancel,
   title = "Confirm Action",
   type = "warning",
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  confirmButtonClass,
 }) => {
   // Define colors based on type
   const getTypeStyles = () => {
@@ -100,14 +106,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 onClick={onCancel}
               >
                 <X size={16} className="mr-1" />
-                Cancel
+                {cancelText}
               </button>
               <button
-                className={`px-4 py-2 text-white rounded-md flex items-center font-medium transition-colors ${confirmButton}`}
+                className={`px-4 py-2 text-white rounded-md flex items-center font-medium transition-colors ${
+                  confirmButtonClass || confirmButton
+                }`}
                 onClick={onConfirm}
               >
                 <Check size={16} className="mr-1" />
-                Confirm
+                {confirmText}
               </button>
             </div>
           </motion.div>

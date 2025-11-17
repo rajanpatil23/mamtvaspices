@@ -30,13 +30,39 @@ export class OrderController {
   getOrderDetails = asyncHandler(async (req: Request, res: Response) => {
     const { orderId } = req.params;
     const userId = req.user?.id;
+    const userRole = req.user?.role;
+    
     if (!userId) {
       throw new AppError(400, "User not found");
     }
-    const order = await this.orderService.getOrderDetails(orderId, userId);
+    
+    // Allow admins to view any order, regular users only their own
+    const order = await this.orderService.getOrderDetails(orderId, userId, userRole);
     sendResponse(res, 200, {
       data: { order },
       message: "Order details retrieved successfully",
+    });
+  });
+
+  updateOrder = asyncHandler(async (req: Request, res: Response) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    if (!status) {
+      throw new AppError(400, "Status is required");
+    }
+    const order = await this.orderService.updateOrderStatus(orderId, status);
+    sendResponse(res, 200, {
+      data: { order },
+      message: "Order updated successfully",
+    });
+  });
+
+  deleteOrder = asyncHandler(async (req: Request, res: Response) => {
+    const { orderId } = req.params;
+    await this.orderService.deleteOrder(orderId);
+    sendResponse(res, 200, {
+      data: null,
+      message: "Order deleted successfully",
     });
   });
 

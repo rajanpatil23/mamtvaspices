@@ -63,6 +63,16 @@ export class AttributeService {
     await this.attributeRepository.deleteAttribute(id);
   }
 
+  async updateAttributeValue(id: string, data: { value: string }) {
+    const attributeValue =
+      await this.attributeRepository.findAttributeValueById(id);
+    if (!attributeValue) {
+      throw new AppError(404, "Attribute value not found");
+    }
+    const slug = slugify(data.value);
+    return await this.attributeRepository.updateAttributeValue(id, { value: data.value, slug });
+  }
+
   async deleteAttributeValue(id: string) {
     const attributeValue =
       await this.attributeRepository.findAttributeValueById(id);

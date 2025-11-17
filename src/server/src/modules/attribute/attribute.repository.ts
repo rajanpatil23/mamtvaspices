@@ -70,6 +70,14 @@ export class AttributeRepository {
     return prisma.attribute.delete({ where: { id } });
   }
 
+  async updateAttributeValue(id: string, data: { value: string; slug: string }) {
+    return prisma.attributeValue.update({
+      where: { id },
+      data: { value: data.value, slug: data.slug },
+      include: { attribute: true },
+    });
+  }
+
   async deleteAttributeValue(id: string) {
     return prisma.attributeValue.delete({ where: { id } });
   }

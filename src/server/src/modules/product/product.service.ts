@@ -502,6 +502,41 @@ export class ProductService {
       throw new AppError(404, "Product not found");
     }
 
+    // Check if any variants have been ordered
+    const variantsWithOrders = await prisma.orderItem.count({
+      where: {
+        variant: {
+          productId: productId,
+        },
+      },
+    });
+
+    if (variantsWithOrders > 0) {
+      throw new AppError(
+        400,
+        "Cannot delete product with existing orders. This product has been ordered and must be kept for order history. Consider marking it as out of stock or inactive instead."
+      );
+    }
+
+    // Check if any variants are in active carts
+    const variantsInCarts = await prisma.cartItem.count({
+      where: {
+        variant: {
+          productId: productId,
+        },
+        cart: {
+          status: "ACTIVE",
+        },
+      },
+    });
+
+    if (variantsInCarts > 0) {
+      throw new AppError(
+        400,
+        "Cannot delete product that is currently in customer carts. Please try again later or remove from carts first."
+      );
+    }
+
     await this.productRepository.deleteProduct(productId);
   }
 }

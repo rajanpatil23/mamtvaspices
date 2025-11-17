@@ -70,4 +70,77 @@ router.get("/user", protect, orderController.getUserOrders);
  */
 router.get("/:orderId", protect, orderController.getOrderDetails);
 
+/**
+ * @swagger
+ * /orders/{orderId}:
+ *   put:
+ *     summary: Update order status (admin only)
+ *     description: Updates the status of a specific order. Accessible only by admins and superadmins.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the order to update.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Order updated successfully.
+ *       404:
+ *         description: Order not found.
+ *       401:
+ *         description: Unauthorized. Token is invalid or missing.
+ *       403:
+ *         description: Forbidden. User does not have the required role.
+ */
+router.put(
+  "/:orderId",
+  protect,
+  authorizeRole("ADMIN", "SUPERADMIN"),
+  orderController.updateOrder
+);
+
+/**
+ * @swagger
+ * /orders/{orderId}:
+ *   delete:
+ *     summary: Delete order (admin only)
+ *     description: Deletes a specific order. Accessible only by admins and superadmins.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the order to delete.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Order deleted successfully.
+ *       404:
+ *         description: Order not found.
+ *       401:
+ *         description: Unauthorized. Token is invalid or missing.
+ *       403:
+ *         description: Forbidden. User does not have the required role.
+ */
+router.delete(
+  "/:orderId",
+  protect,
+  authorizeRole("ADMIN", "SUPERADMIN"),
+  orderController.deleteOrder
+);
+
 export default router;

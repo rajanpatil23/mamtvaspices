@@ -118,6 +118,22 @@ export class AttributeController {
     }
   );
 
+  updateAttributeValue = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { id } = req.params;
+      const { value } = req.body;
+      const attributeValue = await this.attributeService.updateAttributeValue(id, { value });
+      sendResponse(res, 200, {
+        data: { attributeValue },
+        message: "Attribute value updated successfully",
+      });
+      this.logsService.info("Attribute value updated", {
+        userId: req.user?.id,
+        sessionId: req.session.id,
+      });
+    }
+  );
+
   deleteAttributeValue = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const { id } = req.params;
