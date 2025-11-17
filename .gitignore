@@ -34,9 +34,7 @@ coverage/
 # Logs
 logs/
 *.log
-
-logs/
-!src/modules/logs/
+!src/server/src/modules/logs/
 
 # OS files
 Thumbs.db
