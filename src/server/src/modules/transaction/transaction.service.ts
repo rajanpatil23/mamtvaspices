@@ -1,4 +1,4 @@
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 import { TransactionRepository } from "./transaction.repository";
 import { TRANSACTION_STATUS } from "@prisma/client";
 

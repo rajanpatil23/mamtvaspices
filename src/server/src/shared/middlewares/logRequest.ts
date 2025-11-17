@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { makeLogsService } from "../../modules/logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 
 const logsService = makeLogsService();
 

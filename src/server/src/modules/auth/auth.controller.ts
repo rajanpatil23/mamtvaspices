@@ -7,7 +7,7 @@ import { AuthService } from "./auth.service";
 import { tokenUtils } from "@/shared/utils/authUtils";
 import AppError from "@/shared/errors/AppError";
 import { CartService } from "../cart/cart.service";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 
 const { ...clearCookieOptions } = cookieOptions;
 

@@ -3,7 +3,7 @@ import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import { AddressService } from "@/modules/address/address.service";
 import NotFoundError from "@/shared/errors/NotFoundError";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 
 export class AddressController {
   private logsService = makeLogsService();

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import { WebhookService } from "./webhook.service";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 import stripe from "@/infra/payment/stripe";
 import AppError from "@/shared/errors/AppError";
 

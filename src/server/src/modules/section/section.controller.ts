@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import { SectionService } from "./section.service";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 import { uploadToCloudinary } from "@/shared/utils/uploadToCloudinary";
 import { SECTION_TYPE } from "@prisma/client";
 

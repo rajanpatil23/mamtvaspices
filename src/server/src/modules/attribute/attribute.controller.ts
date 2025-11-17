@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import { AttributeService } from "./attribute.service";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 
 export class AttributeController {
   private logsService = makeLogsService();

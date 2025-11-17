@@ -3,7 +3,7 @@ import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import { ProductService } from "./product.service";
 import slugify from "@/shared/utils/slugify";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 import { uploadToCloudinary } from "@/shared/utils/uploadToCloudinary";
 import AppError from "@/shared/errors/AppError";
 

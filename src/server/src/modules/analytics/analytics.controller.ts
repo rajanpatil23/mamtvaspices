@@ -3,7 +3,7 @@ import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import AppError from "@/shared/errors/AppError";
 import { DateRangeQuery, ExportableData } from "./analytics.types";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 import { AnalyticsService } from "./analytics.service";
 import generateCSV from "@/shared/utils/export/generateCsv";
 import generatePDF from "@/shared/utils/export/generatePdf";

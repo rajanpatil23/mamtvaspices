@@ -4,7 +4,7 @@ import sendResponse from "@/shared/utils/sendResponse";
 import { CheckoutService } from "./checkout.service";
 import AppError from "@/shared/errors/AppError";
 import { CartService } from "../cart/cart.service";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 
 export class CheckoutController {
   private logsService = makeLogsService();

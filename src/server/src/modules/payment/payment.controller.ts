@@ -3,7 +3,7 @@ import asyncHandler from "@/shared/utils/asyncHandler";
 import sendResponse from "@/shared/utils/sendResponse";
 import AppError from "@/shared/errors/AppError";
 import { PaymentService } from "./payment.service";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 
 export class PaymentController {
   private logsService = makeLogsService();

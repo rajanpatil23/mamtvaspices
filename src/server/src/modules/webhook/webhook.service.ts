@@ -7,7 +7,7 @@ import {
 import stripe from "@/infra/payment/stripe";
 import AppError from "@/shared/errors/AppError";
 import redisClient from "@/infra/cache/redis";
-import { makeLogsService } from "../logs/logs.factory";
+import { makeLogsService } from "@modules/logs/logs.factory";
 import { CartService } from "../cart/cart.service";
 import { CartRepository } from "../cart/cart.repository";
 
