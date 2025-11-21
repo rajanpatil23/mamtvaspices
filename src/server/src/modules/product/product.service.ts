@@ -401,16 +401,23 @@ export class ProductService {
       );
 
       if (variants) {
+        console.log("Deleting existing variants for product:", productId);
         await prisma.productVariant.deleteMany({ where: { productId } });
+        
+        console.log("Creating new variants:", JSON.stringify(variants, null, 2));
         for (const variant of variants) {
+          console.log("Creating variant:", variant.sku, {
+            barcode: variant.barcode,
+            warehouseLocation: variant.warehouseLocation,
+          });
           await this.variantRepository.createVariant({
             productId,
             sku: variant.sku,
             price: variant.price,
             stock: variant.stock,
             lowStockThreshold: variant.lowStockThreshold || 10,
-            barcode: variant.barcode,
-            warehouseLocation: variant.warehouseLocation,
+            barcode: variant.barcode || "",
+            warehouseLocation: variant.warehouseLocation || "",
             attributes: variant.attributes,
             images: variant.images || [],
           });

@@ -117,7 +117,56 @@ const ProductsDashboard = () => {
     payload.append("isBestSeller", data.isBestSeller.toString());
     payload.append("isFeatured", data.isFeatured.toString());
     payload.append("categoryId", data.categoryId || "");
-    payload.append("variants", JSON.stringify(data.variants));
+
+    // Track image indexes for each variant (same as create)
+    let imageIndex = 0;
+    data.variants.forEach((variant, index) => {
+      payload.append(`variants[${index}][sku]`, variant.sku || "");
+      payload.append(`variants[${index}][price]`, variant.price.toString());
+      payload.append(`variants[${index}][stock]`, variant.stock.toString());
+      payload.append(
+        `variants[${index}][lowStockThreshold]`,
+        variant.lowStockThreshold?.toString() || "10"
+      );
+      payload.append(`variants[${index}][barcode]`, variant.barcode || "");
+      payload.append(
+        `variants[${index}][warehouseLocation]`,
+        variant.warehouseLocation || ""
+      );
+      // Clean attributes - only send attributeId and valueId
+      const cleanedAttributes = (variant.attributes || []).map((attr: any) => ({
+        attributeId: attr.attributeId,
+        valueId: attr.valueId,
+      }));
+      payload.append(
+        `variants[${index}][attributes]`,
+        JSON.stringify(cleanedAttributes)
+      );
+      // Track image indexes for this variant
+      if (Array.isArray(variant.images) && variant.images.length > 0) {
+        const imageIndexes = variant.images
+          .map((file) => {
+            if (file instanceof File) {
+              payload.append(`images`, file);
+              return imageIndex++;
+            }
+            return null;
+          })
+          .filter((idx) => idx !== null);
+        payload.append(
+          `variants[${index}][imageIndexes]`,
+          JSON.stringify(imageIndexes)
+        );
+      } else {
+        payload.append(`variants[${index}][imageIndexes]`, JSON.stringify([]));
+      }
+    });
+
+    // Log the payload for debugging
+    console.log("Updating product with payload:");
+    for (const [key, value] of payload.entries()) {
+      console.log(`${key}:`, value);
+    }
 
     try {
       await updateProduct({

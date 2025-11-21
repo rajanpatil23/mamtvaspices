@@ -167,22 +167,29 @@ export class ProductController {
 
       console.log("req.body:", req.body, "req.files:", req.files);
 
-      // Parse variants from req.body
+      // Parse variants from req.body - handle both array and individual field formats
       let parsedVariants: any[] = [];
-      for (const key in req.body) {
-        if (key.startsWith("variants[")) {
-          const match = key.match(/^variants\[(\d+)\]\[(\w+)\]$/);
-          if (match) {
-            const index = parseInt(match[1]);
-            const field = match[2];
-            if (!parsedVariants[index]) {
-              parsedVariants[index] = {};
+      
+      // Check if variants is already an array (new format)
+      if (Array.isArray(req.body.variants)) {
+        parsedVariants = req.body.variants;
+      } else {
+        // Parse from individual fields (old format)
+        for (const key in req.body) {
+          if (key.startsWith("variants[")) {
+            const match = key.match(/^variants\[(\d+)\]\[(\w+)\]$/);
+            if (match) {
+              const index = parseInt(match[1]);
+              const field = match[2];
+              if (!parsedVariants[index]) {
+                parsedVariants[index] = {};
+              }
+              parsedVariants[index][field] = req.body[key];
             }
-            parsedVariants[index][field] = req.body[key];
           }
         }
+        parsedVariants = parsedVariants.filter(Boolean);
       }
-      parsedVariants = parsedVariants.filter(Boolean);
 
       // Process files for each variant
       const files = (req.files as Express.Multer.File[]) || [];
@@ -250,18 +257,19 @@ export class ProductController {
                 ...bodyImages.filter((img: string) => img),
               ];
 
+              // Convert string values to proper types
+              const price = parseFloat(variant.price);
+              const stock = parseInt(variant.stock, 10);
+              const lowStockThreshold = parseInt(variant.lowStockThreshold || "10", 10);
+
               // Validate other fields
-              if (
-                !variant.sku ||
-                typeof variant.price !== "number" ||
-                typeof variant.stock !== "number"
-              ) {
+              if (!variant.sku || isNaN(price) || isNaN(stock)) {
                 throw new AppError(
                   400,
                   `Variant at index ${index} must have sku, price, and stock`
                 );
               }
-              if (variant.stock < 0) {
+              if (stock < 0) {
                 throw new AppError(
                   400,
                   `Variant at index ${index} must have a valid non-negative stock number`
@@ -309,8 +317,11 @@ export class ProductController {
 
               return {
                 ...variant,
-                images: imageUrls,
+                price,
+                stock,
+                lowStockThreshold,
                 attributes: parsedAttributes,
+                images: imageUrls,
               };
             })
           )
